@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+.git
+.gitignore
+.env*
+!.env.example
+coverage
+.vscode
+.idea
+*.log
+.DS_Store
+Thumbs.db
+dist
+build

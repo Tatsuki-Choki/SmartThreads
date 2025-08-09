@@ -1,0 +1,260 @@
+{
+  "scenarios": {
+    "application_startup": {
+      "name": "Application Startup Validation",
+      "description": "Comprehensive startup verification and health checks",
+      "priority": "critical",
+      "timeout": 30000,
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://localhost:3000",
+          "description": "Navigate to application home page"
+        },
+        {
+          "action": "waitForSelector",
+          "selector": "body",
+          "description": "Wait for page body to load"
+        },
+        {
+          "action": "screenshot",
+          "name": "startup-homepage",
+          "description": "Capture homepage after load"
+        },
+        {
+          "action": "checkPerformance",
+          "metrics": ["lcp", "tti", "cls", "fcp"],
+          "description": "Measure core web vitals"
+        },
+        {
+          "action": "validatePWA",
+          "checks": ["manifest", "serviceWorker", "offline"],
+          "description": "Verify PWA configuration"
+        }
+      ],
+      "assertions": [
+        {
+          "type": "performance",
+          "metric": "lcp",
+          "threshold": 2500,
+          "operator": "lt"
+        },
+        {
+          "type": "performance", 
+          "metric": "tti",
+          "threshold": 3000,
+          "operator": "lt"
+        },
+        {
+          "type": "element",
+          "selector": "[data-testid='app-header']",
+          "expected": "visible"
+        }
+      ]
+    },
+    "mobile_responsiveness": {
+      "name": "Mobile UI Responsiveness",
+      "description": "Mobile-first design and touch interaction validation",
+      "priority": "high",
+      "timeout": 20000,
+      "deviceConfig": {
+        "viewport": { "width": 375, "height": 812 },
+        "userAgent": "mobile",
+        "touchSupport": true
+      },
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://localhost:3000",
+          "description": "Navigate to application on mobile viewport"
+        },
+        {
+          "action": "screenshot",
+          "name": "mobile-homepage-portrait",
+          "description": "Capture mobile homepage in portrait"
+        },
+        {
+          "action": "rotateDevice",
+          "orientation": "landscape",
+          "description": "Rotate to landscape mode"
+        },
+        {
+          "action": "screenshot",
+          "name": "mobile-homepage-landscape", 
+          "description": "Capture mobile homepage in landscape"
+        },
+        {
+          "action": "testTouchInteractions",
+          "elements": ["[data-testid='nav-button']", "[data-testid='main-cta']"],
+          "description": "Test touch tap interactions"
+        },
+        {
+          "action": "validateSingleHandedUsage",
+          "thumbReachZone": { "height": 50, "position": "bottom" },
+          "description": "Check critical controls are within thumb reach"
+        }
+      ],
+      "assertions": [
+        {
+          "type": "viewport",
+          "property": "scrollable",
+          "expected": false,
+          "description": "No horizontal scroll on mobile"
+        },
+        {
+          "type": "element",
+          "selector": "[data-testid='mobile-nav']",
+          "expected": "visible",
+          "description": "Mobile navigation visible"
+        }
+      ]
+    },
+    "core_functionality": {
+      "name": "Core Functionality Testing",
+      "description": "Primary user workflows and feature validation",
+      "priority": "critical", 
+      "timeout": 45000,
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://localhost:3000",
+          "description": "Start at homepage"
+        },
+        {
+          "action": "testNavigation",
+          "routes": ["/", "/auth", "/dashboard"],
+          "description": "Test primary navigation paths"
+        },
+        {
+          "action": "testFormInteractions",
+          "forms": ["login", "post-creation"],
+          "description": "Validate form inputs and submissions"
+        },
+        {
+          "action": "testErrorHandling",
+          "scenarios": ["network-error", "invalid-input", "authentication-failure"],
+          "description": "Verify error states and user feedback"
+        },
+        {
+          "action": "testOfflineMode",
+          "description": "Test PWA offline functionality"
+        }
+      ],
+      "assertions": [
+        {
+          "type": "navigation",
+          "expected": "all-routes-accessible"
+        },
+        {
+          "type": "forms",
+          "expected": "validation-working"
+        },
+        {
+          "type": "errors",
+          "expected": "user-friendly-messages"
+        }
+      ]
+    },
+    "performance_monitoring": {
+      "name": "Performance Metrics Monitoring", 
+      "description": "Comprehensive performance analysis and monitoring",
+      "priority": "high",
+      "timeout": 60000,
+      "steps": [
+        {
+          "action": "enablePerformanceMonitoring",
+          "metrics": ["all"],
+          "description": "Start performance monitoring"
+        },
+        {
+          "action": "navigate",
+          "url": "http://localhost:3000",
+          "description": "Navigate with performance monitoring"
+        },
+        {
+          "action": "simulateUserJourney",
+          "journey": "new-user-onboarding",
+          "description": "Simulate typical user interaction"
+        },
+        {
+          "action": "measureBundleSize",
+          "description": "Analyze JavaScript bundle performance"
+        },
+        {
+          "action": "analyzeNetworkRequests",
+          "description": "Monitor network efficiency"
+        },
+        {
+          "action": "checkCaching",
+          "resources": ["static", "api", "images"],
+          "description": "Validate caching strategies"
+        }
+      ],
+      "thresholds": {
+        "lcp": 2500,
+        "tti": 3000, 
+        "cls": 0.1,
+        "fcp": 1500,
+        "bundleSize": 500000,
+        "networkRequests": 50
+      }
+    },
+    "accessibility_compliance": {
+      "name": "Accessibility WCAG AA Compliance",
+      "description": "Comprehensive accessibility validation and testing",
+      "priority": "medium",
+      "timeout": 30000,
+      "steps": [
+        {
+          "action": "navigate", 
+          "url": "http://localhost:3000",
+          "description": "Navigate to homepage for accessibility testing"
+        },
+        {
+          "action": "runAxeAudit",
+          "rules": "wcag2aa",
+          "description": "Run automated accessibility audit"
+        },
+        {
+          "action": "testKeyboardNavigation",
+          "description": "Validate keyboard navigation paths"
+        },
+        {
+          "action": "checkColorContrast",
+          "standard": "WCAG AA",
+          "description": "Validate color contrast ratios"
+        },
+        {
+          "action": "validateSemanticHTML",
+          "description": "Check semantic HTML structure"
+        },
+        {
+          "action": "testScreenReaderCompatibility",
+          "description": "Verify screen reader support"
+        }
+      ],
+      "assertions": [
+        {
+          "type": "accessibility",
+          "standard": "wcag2aa",
+          "expected": "no-violations"
+        },
+        {
+          "type": "keyboard",
+          "expected": "all-interactive-elements-reachable"
+        },
+        {
+          "type": "contrast",
+          "minimum": 4.5,
+          "expected": "pass"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-01-09",
+    "maintainer": "SmartThreads QA Team",
+    "documentation": "docs/reviewer-agent.md"
+  }
+}

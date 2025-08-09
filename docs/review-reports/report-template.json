@@ -1,0 +1,140 @@
+{
+  "reportTemplate": {
+    "metadata": {
+      "version": "1.0.0",
+      "timestamp": "{{timestamp}}",
+      "agent": "SmartThreads Reviewer",
+      "environment": {
+        "baseUrl": "{{baseUrl}}",
+        "browser": "{{browser}}",
+        "viewport": "{{viewport}}",
+        "userAgent": "{{userAgent}}"
+      }
+    },
+    "summary": {
+      "status": "{{overallStatus}}",
+      "duration": "{{totalDuration}}ms",
+      "scenariosRun": "{{scenarioCount}}",
+      "passed": "{{passedCount}}",
+      "failed": "{{failedCount}}",
+      "warnings": "{{warningCount}}"
+    },
+    "scenarios": [
+      {
+        "name": "{{scenarioName}}",
+        "description": "{{scenarioDescription}}",
+        "priority": "{{priority}}",
+        "status": "{{status}}",
+        "duration": "{{duration}}ms",
+        "startTime": "{{startTime}}",
+        "endTime": "{{endTime}}",
+        "steps": [
+          {
+            "action": "{{action}}",
+            "description": "{{description}}",
+            "status": "{{status}}",
+            "duration": "{{duration}}ms",
+            "screenshot": "{{screenshotPath}}",
+            "error": "{{errorMessage}}"
+          }
+        ],
+        "metrics": {
+          "performance": {
+            "lcp": "{{lcp}}ms",
+            "tti": "{{tti}}ms", 
+            "cls": "{{cls}}",
+            "fcp": "{{fcp}}ms"
+          },
+          "accessibility": {
+            "violations": "{{a11yViolations}}",
+            "score": "{{a11yScore}}"
+          },
+          "network": {
+            "requests": "{{networkRequests}}",
+            "totalSize": "{{totalSize}}kb",
+            "failedRequests": "{{failedRequests}}"
+          }
+        },
+        "assertions": [
+          {
+            "type": "{{assertionType}}",
+            "description": "{{description}}",
+            "expected": "{{expected}}",
+            "actual": "{{actual}}",
+            "status": "{{status}}",
+            "message": "{{message}}"
+          }
+        ]
+      }
+    ],
+    "issues": [
+      {
+        "severity": "{{severity}}",
+        "type": "{{issueType}}",
+        "scenario": "{{scenarioName}}",
+        "description": "{{description}}",
+        "recommendation": "{{recommendation}}",
+        "screenshot": "{{screenshotPath}}",
+        "location": {
+          "url": "{{url}}",
+          "selector": "{{selector}}",
+          "line": "{{line}}"
+        }
+      }
+    ],
+    "recommendations": [
+      {
+        "priority": "{{priority}}",
+        "category": "{{category}}",
+        "title": "{{title}}",
+        "description": "{{description}}",
+        "actionItems": [
+          "{{actionItem}}"
+        ],
+        "references": [
+          "{{referenceUrl}}"
+        ]
+      }
+    ],
+    "artifacts": {
+      "screenshots": [
+        {
+          "name": "{{screenshotName}}",
+          "path": "{{screenshotPath}}",
+          "scenario": "{{scenarioName}}",
+          "timestamp": "{{timestamp}}"
+        }
+      ],
+      "logs": {
+        "console": "{{consoleLogPath}}",
+        "network": "{{networkLogPath}}",
+        "performance": "{{performanceLogPath}}"
+      },
+      "reports": {
+        "html": "{{htmlReportPath}}",
+        "json": "{{jsonReportPath}}"
+      }
+    },
+    "trends": {
+      "performance": {
+        "lcp": {
+          "current": "{{currentLcp}}",
+          "previous": "{{previousLcp}}",
+          "trend": "{{lcpTrend}}"
+        },
+        "tti": {
+          "current": "{{currentTti}}",
+          "previous": "{{previousTti}}",
+          "trend": "{{ttiTrend}}"
+        }
+      },
+      "quality": {
+        "passRate": {
+          "current": "{{currentPassRate}}",
+          "previous": "{{previousPassRate}}",
+          "trend": "{{passRateTrend}}"
+        }
+      }
+    }
+  }
+}

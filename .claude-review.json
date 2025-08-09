@@ -1,0 +1,132 @@
+{
+  "agent": {
+    "name": "SmartThreads Reviewer",
+    "version": "1.0.0",
+    "description": "Quality assurance and validation specialist for SmartThreads application",
+    "role": "reviewer_only",
+    "capabilities": [
+      "application_validation",
+      "ui_ux_testing",
+      "performance_monitoring",
+      "visual_regression_testing",
+      "requirement_compliance_check"
+    ]
+  },
+  "playwright": {
+    "browser": "chromium",
+    "viewport": {
+      "width": 375,
+      "height": 812,
+      "isMobile": true
+    },
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+    "timeout": 30000,
+    "retries": 2
+  },
+  "testing": {
+    "baseUrl": "http://localhost:3000",
+    "backendUrl": "http://localhost:3001",
+    "scenarios": [
+      {
+        "name": "application_startup",
+        "description": "Verify application starts correctly and loads main page",
+        "priority": "critical",
+        "steps": [
+          "navigate_to_home",
+          "check_page_load_performance",
+          "verify_pwa_manifest",
+          "check_mobile_optimization"
+        ]
+      },
+      {
+        "name": "ui_responsiveness",
+        "description": "Test mobile-first UI design and responsiveness",
+        "priority": "high",
+        "steps": [
+          "test_touch_interactions",
+          "verify_single_handed_operation",
+          "check_viewport_scaling",
+          "test_orientation_changes"
+        ]
+      },
+      {
+        "name": "core_functionality",
+        "description": "Validate main application features",
+        "priority": "critical",
+        "steps": [
+          "test_navigation_flow",
+          "verify_form_interactions",
+          "check_error_handling",
+          "test_offline_capabilities"
+        ]
+      },
+      {
+        "name": "performance_metrics",
+        "description": "Monitor performance requirements",
+        "priority": "high",
+        "thresholds": {
+          "lcp": 2500,
+          "tti": 3000,
+          "cls": 0.1,
+          "fcp": 1500
+        }
+      },
+      {
+        "name": "accessibility_compliance",
+        "description": "Check WCAG AA compliance and screen reader support",
+        "priority": "medium",
+        "steps": [
+          "verify_semantic_html",
+          "check_aria_labels",
+          "test_keyboard_navigation",
+          "validate_color_contrast"
+        ]
+      }
+    ]
+  },
+  "reporting": {
+    "outputDir": "docs/review-reports",
+    "formats": ["json", "html", "screenshots"],
+    "includeScreenshots": true,
+    "includeNetworkLogs": true,
+    "includeConsoleErrors": true
+  },
+  "automation": {
+    "triggers": {
+      "manual": {
+        "command": "/review",
+        "description": "Manual trigger for comprehensive review"
+      },
+      "onFileChange": {
+        "enabled": false,
+        "patterns": ["src/**/*.tsx", "src/**/*.ts", "public/**/*"],
+        "debounce": 5000
+      },
+      "preCommit": {
+        "enabled": false,
+        "runCriticalOnly": true
+      }
+    }
+  },
+  "notifications": {
+    "onSuccess": {
+      "console": true,
+      "summary": true
+    },
+    "onFailure": {
+      "console": true,
+      "detailed": true,
+      "includeScreenshots": true
+    }
+  },
+  "environment": {
+    "timezone": "Asia/Tokyo",
+    "locale": "ja-JP",
+    "testData": {
+      "sampleUser": {
+        "email": "test@example.com",
+        "username": "testuser"
+      }
+    }
+  }
+}
