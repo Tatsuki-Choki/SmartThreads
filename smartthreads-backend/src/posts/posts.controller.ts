@@ -32,7 +32,7 @@ import { PublishedPostCache } from "../entities/published-post-cache.entity";
 
 @ApiTags("posts")
 @ApiBearerAuth()
-@Controller()
+@Controller("posts")
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}

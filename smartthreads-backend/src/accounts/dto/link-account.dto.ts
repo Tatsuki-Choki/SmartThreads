@@ -11,6 +11,26 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class LinkAccountDto {
   @ApiProperty({
+    example: "My Main Account",
+    description: "Display name for the account",
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(50)
+  name: string;
+
+  @ApiProperty({
+    example: "8888010131323883",
+    description: "Threads User ID",
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(50)
+  threadsUserId: string;
+
+  @ApiProperty({
     example: "1234567890123456",
     description: "Threads App Client ID from Meta Developer Dashboard",
   })

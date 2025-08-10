@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '18.x'
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
@@ -94,20 +94,19 @@ jobs:
       run: npm run lint
 
     - name: Run Prettier check
-      run: npx prettier --check "src/**/*.ts" "test/**/*.ts"
+      run: npm run format -- --check
 
     - name: Run tests
       run: npm run test:cov
       env:
-        DATABASE_HOST: localhost
-        DATABASE_PORT: 5432
-        DATABASE_USERNAME: postgres
-        DATABASE_PASSWORD: postgres
-        DATABASE_NAME: smartthreads_test
+        NODE_ENV: test
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/smartthreads_test
         REDIS_HOST: localhost
         REDIS_PORT: 6379
-        JWT_SECRET: test-jwt-secret
+        JWT_SECRET: test-jwt-secret-key-for-testing
         ENCRYPTION_KEY: test-encryption-key-32-characters
+        THREADS_CLIENT_ID: test-client-id
+        THREADS_CLIENT_SECRET: test-client-secret
 
     - name: Build
       run: npm run build

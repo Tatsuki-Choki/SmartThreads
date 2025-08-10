@@ -321,7 +321,11 @@ export class ThreadsApiService {
       );
     }
 
-    this.logger.error(`${message}: ${error.message}`, error.stack);
+    this.logger.error(`${message}: ${error.message}`, {
+      status: error.response?.status,
+      data: error.response?.data,
+      stack: error.stack,
+    });
     throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

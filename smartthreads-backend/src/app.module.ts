@@ -14,6 +14,8 @@ import { AccountsModule } from "./accounts/accounts.module";
 import { WorkersModule } from "./workers/workers.module";
 import { PostsModule } from "./posts/posts.module";
 import { MediaModule } from "./media/media.module";
+import { UploadsModule } from "./uploads/uploads.module";
+import { KeywordRepliesModule } from "./keyword-replies/keyword-replies.module";
 import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
@@ -66,6 +68,8 @@ import { ScheduleModule } from "@nestjs/schedule";
     WorkersModule,
     PostsModule,
     MediaModule,
+    UploadsModule,
+    KeywordRepliesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

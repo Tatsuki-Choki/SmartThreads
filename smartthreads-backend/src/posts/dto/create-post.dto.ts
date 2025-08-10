@@ -21,13 +21,13 @@ export class CreatePostDto {
   accountId: string;
 
   @ApiProperty({
-    example: "Check out our new product launch! 🚀",
-    description: "Post content (max 500 characters)",
+    example: "Check out our new product launch!",
+    description: "Post text content (max 500 characters)",
   })
   @IsString()
   @IsNotEmpty()
   @MaxLength(500)
-  content: string;
+  text: string;
 
   @ApiPropertyOptional({
     example: [

@@ -38,13 +38,118 @@ export class AccountsService {
   /**
    * Link a Threads account to a user
    */
+  /**
+   * Fetch Threads user info using access token
+   */
+  /**
+   * Fetch Threads user info using access token
+   */
+  /**
+   * Fetch Threads user info using access token
+   */
+  async fetchThreadsUserInfo(params: {
+    accessToken: string;
+    clientId: string;
+    clientSecret: string;
+  }): Promise<{ userId: string; username?: string; tokenExpiry?: string }> {
+    try {
+      this.logger.log('Fetching user info from Threads API...');
+      
+      // Threads APIを使用してユーザー情報を取得（fieldsパラメータでusernameも取得）
+      const userResponse = await fetch('https://graph.threads.net/v1.0/me?fields=id,username', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${params.accessToken}`
+        }
+      });
+
+      this.logger.log(`User API response status: ${userResponse.status}`);
+      
+      // レスポンステキストを先に取得してログ出力
+      const responseText = await userResponse.text();
+      this.logger.log(`User API response text: ${responseText}`);
+
+      if (!userResponse.ok) {
+        let errorMessage = 'Failed to fetch user info from Threads API';
+        try {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.error?.message || errorMessage;
+        } catch (parseError) {
+          // JSONパースに失敗した場合はそのままデフォルトメッセージを使用
+          this.logger.warn('Failed to parse error response JSON:', parseError);
+          errorMessage = `API Error (${userResponse.status}): ${responseText}`;
+        }
+        throw new BadRequestException(errorMessage);
+      }
+
+      let userData;
+      try {
+        userData = JSON.parse(responseText);
+      } catch (parseError) {
+        this.logger.error('Failed to parse user response JSON:', parseError);
+        throw new BadRequestException('Invalid response from Threads API');
+      }
+      const userId = userData.id;
+      const username = userData.username;
+
+      this.logger.log(`Fetched user info: ID=${userId}, username=${username}`);
+
+      // トークンの有効期限を取得
+      let tokenExpiry: string | undefined;
+      try {
+        const tokenInfoResponse = await fetch(
+          `https://graph.facebook.com/debug_token?input_token=${params.accessToken}&access_token=${params.clientId}|${params.clientSecret}`
+        );
+
+        if (tokenInfoResponse.ok) {
+          const tokenInfo = await tokenInfoResponse.json();
+          this.logger.log(`Token debug response:`, JSON.stringify(tokenInfo, null, 2));
+          
+          if (tokenInfo.data && tokenInfo.data.expires_at) {
+            const expiryDate = new Date(tokenInfo.data.expires_at * 1000);
+            tokenExpiry = expiryDate.toISOString();
+            this.logger.log(`Token expiry: ${tokenExpiry}`);
+          } else {
+            this.logger.warn('No expires_at found in token debug response');
+          }
+        } else {
+          const errorData = await tokenInfoResponse.json();
+          this.logger.warn('Failed to fetch token debug info:', errorData);
+        }
+      } catch (error) {
+        // トークン情報の取得に失敗しても、User IDとusernameは返す
+        this.logger.warn('Failed to fetch token expiry info', error);
+      }
+
+      const result = { userId, username, tokenExpiry };
+      this.logger.log(`Returning result:`, result);
+      
+      return result;
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      this.logger.error('Failed to fetch Threads user info', error);
+      throw new BadRequestException('Failed to fetch user info from Threads API');
+    }
+  }
+
   async linkAccount(
     userId: string,
     linkAccountDto: LinkAccountDto,
   ): Promise<Account> {
-    const { clientId, clientSecret, accessToken, timezone } = linkAccountDto;
+    const { name, threadsUserId, clientId, clientSecret, accessToken, timezone } = linkAccountDto;
 
     try {
+      // Check if account already exists
+      const existingAccount = await this.accountRepository.findOne({
+        where: { threadsUserId: threadsUserId },
+      });
+
+      if (existingAccount) {
+        throw new ConflictException("This Threads account is already linked");
+      }
+
       // Validate credentials with Threads API
       const testResult = await this.threadsApiService.testConnection(
         clientId,
@@ -60,22 +165,13 @@ export class AccountsService {
 
       const { profile, tokenInfo } = testResult;
 
-      // Check if account already exists
-      const existingAccount = await this.accountRepository.findOne({
-        where: { threadsUserId: profile.id },
-      });
-
-      if (existingAccount) {
-        throw new ConflictException("This Threads account is already linked");
-      }
-
-      // Create account
+      // Create account using provided data
       const account = this.accountRepository.create({
-        threadsUserId: profile.id,
-        displayName: profile.username,
-        iconUrl: profile.threads_profile_picture_url,
+        threadsUserId: threadsUserId,
+        displayName: name,
+        iconUrl: profile?.threads_profile_picture_url || null,
         status: AccountStatus.ACTIVE,
-        permissions: tokenInfo.data.scopes,
+        permissions: tokenInfo?.data?.scopes || [],
         userId,
         lastHealthCheckAt: new Date(),
       });
@@ -88,8 +184,8 @@ export class AccountsService {
         clientIdEnc: clientId,
         clientSecretEnc: clientSecret,
         accessTokenEnc: accessToken,
-        scopes: tokenInfo.data.scopes,
-        expiresAt: tokenInfo.data.expires_at
+        scopes: tokenInfo?.data?.scopes || [],
+        expiresAt: tokenInfo?.data?.expires_at
           ? new Date(tokenInfo.data.expires_at * 1000)
           : null,
         lastVerifiedAt: new Date(),
@@ -113,11 +209,11 @@ export class AccountsService {
         "account",
         savedAccount.id,
         true,
-        { threadsUserId: profile.id, username: profile.username },
+        { threadsUserId: threadsUserId, displayName: name },
       );
 
       this.logger.log(
-        `Account linked successfully: ${profile.username} (${profile.id})`,
+        `Account linked successfully: ${name} (${threadsUserId})`,
       );
 
       return savedAccount;

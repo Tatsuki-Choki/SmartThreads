@@ -52,7 +52,7 @@ export class PostsService {
     userId: string,
     createPostDto: CreatePostDto,
   ): Promise<ScheduledPost> {
-    const { accountId, content, mediaUrls, scheduledFor } = createPostDto;
+    const { accountId, text, mediaUrls, scheduledFor } = createPostDto;
 
     // Verify account ownership
     const account = await this.accountsService.getAccountById(
@@ -85,7 +85,7 @@ export class PostsService {
       // Create scheduled post
       const post = this.scheduledPostRepository.create({
         accountId,
-        text: content,
+        text: text,
         mediaRefs: mediaUrls || [],
         scheduledAt: scheduledFor ? new Date(scheduledFor) : new Date(),
         scheduleMode: scheduledFor

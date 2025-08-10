@@ -58,7 +58,23 @@
       "Bash(git branch:*)",
       "Bash(git remote add:*)",
       "Bash(git add:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git push:*)",
+      "Bash(./scripts/deploy.sh:*)",
+      "mcp__serena__find_file",
+      "mcp__playwright__browser_handle_dialog",
+      "Bash(convert:*)",
+      "mcp__playwright__browser_install",
+      "Bash(pkill:*)",
+      "mcp__playwright__browser_network_requests",
+      "Bash(kill:*)",
+      "Bash(mv:*)",
+      "Bash(kill:*)",
+      "mcp__playwright__browser_navigate_back",
+      "Bash(PORT=3001 npm run dev)",
+      "mcp__serena__insert_before_symbol",
+      "mcp__serena__think_about_whether_you_are_done",
+      "Bash(PORT=3000 npm run start:dev)"
     ],
     "deny": []
   }

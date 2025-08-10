@@ -8,6 +8,9 @@ import { PublishedPostCache } from "../entities/published-post-cache.entity";
 import { MediaAsset } from "../entities/media-asset.entity";
 import { Job } from "../entities/job.entity";
 import { AuditLog } from "../entities/audit-log.entity";
+import { KeywordReply } from "../entities/keyword-reply.entity";
+import { ReplyTemplate } from "../entities/reply-template.entity";
+import { ReplyLog } from "../entities/reply-log.entity";
 
 export const getDatabaseConfig = (
   configService: ConfigService,
@@ -26,6 +29,9 @@ export const getDatabaseConfig = (
       MediaAsset,
       Job,
       AuditLog,
+      KeywordReply,
+      ReplyTemplate,
+      ReplyLog,
     ],
     synchronize: !isProduction,
     logging: configService.get("NODE_ENV") === "development",

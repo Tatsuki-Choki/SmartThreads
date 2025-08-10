@@ -6,13 +6,15 @@ import { AppModule } from "./app.module";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { join } from "path";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const frontendOrigin = configService.get(
     "FRONTEND_URL",
-    "http://localhost:3001",
+    "http://localhost:3000",
   );
   const corsOrigin = configService.get("CORS_ORIGIN", frontendOrigin);
 
@@ -36,6 +38,11 @@ async function bootstrap() {
       crossOriginEmbedderPolicy: false,
     }),
   );
+
+  // Static files serving for uploads
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/',
+  });
 
   // Cookie parser
   app.use(cookieParser());
@@ -104,10 +111,10 @@ async function bootstrap() {
     SwaggerModule.setup("api-docs", app, document);
   }
 
-  const port = configService.get("PORT", 3000);
+  const port = configService.get("PORT", 3001);
   await app.listen(port);
 
-  console.log(`🚀 SmartThreads API is running on: http://localhost:${port}`);
+  console.log(`SmartThreads API is running on: http://localhost:${port}`);
   console.log(`📚 API Documentation: http://localhost:${port}/api-docs`);
 }
 

@@ -79,7 +79,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get current user profile" })
   @ApiResponse({ status: 200, description: "User profile" })
-  async getProfile(@CurrentUser() user: User) {
+  async getMe(@CurrentUser() user: User) {
     return {
       id: user.id,
       email: user.email,
@@ -91,6 +91,24 @@ export class AuthController {
       notificationSettings: user.notificationSettings,
       createdAt: user.createdAt,
       lastLoginAt: user.lastLoginAt,
+    };
+  }
+
+  @Get("profile")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Get current user profile" })
+  @ApiResponse({ status: 200, description: "User profile" })
+  async getProfile(@CurrentUser() user: User) {
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        timezone: user.timezone,
+        language: user.language,
+      }
     };
   }
 
@@ -135,6 +153,19 @@ export class AuthController {
   @ApiOperation({ summary: "Create test user for development" })
   @ApiResponse({ status: 201, description: "Test user created" })
   async createTestUser() {
+    if (process.env.NODE_ENV !== "development") {
+      throw new BadRequestException(
+        "Test endpoints only available in development",
+      );
+    }
+    return this.authService.createTestUser();
+  }
+
+  @Post("test-login")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Test login for development" })
+  @ApiResponse({ status: 200, description: "Test user logged in" })
+  async testLogin() {
     if (process.env.NODE_ENV !== "development") {
       throw new BadRequestException(
         "Test endpoints only available in development",

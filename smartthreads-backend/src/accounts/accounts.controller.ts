@@ -33,6 +33,31 @@ import { Account } from "../entities/account.entity";
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
+  @Post("fetch-user-info")
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
+  @ApiOperation({ summary: "Fetch Threads user info using access token" })
+  @ApiResponse({
+    status: 200,
+    description: "User info fetched successfully",
+    schema: {
+      type: "object",
+      properties: {
+        userId: { type: "string" },
+        username: { type: "string", nullable: true },
+        tokenExpiry: { type: "string", nullable: true },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Invalid token or request",
+  })
+  async fetchUserInfo(
+    @Body() body: { accessToken: string; clientId: string; clientSecret: string },
+  ): Promise<{ userId: string; username?: string; tokenExpiry?: string }> {
+    return this.accountsService.fetchThreadsUserInfo(body);
+  }
+
   @Post("link")
   @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @ApiOperation({ summary: "Link a new Threads account" })
