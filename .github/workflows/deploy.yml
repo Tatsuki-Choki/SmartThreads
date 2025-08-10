@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: 本番環境デプロイ
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    environment: production
+    
+    steps:
+      - name: コードをチェックアウト
+        uses: actions/checkout@v4
+        
+      - name: Dockerイメージをビルド・プッシュ
+        run: |
+          echo "本番環境へのデプロイ処理"
+          echo "以下の処理を実装してください:"
+          echo "1. Dockerイメージのビルド"
+          echo "2. コンテナレジストリへのプッシュ"
+          echo "3. 本番環境でのデプロイ実行"
+          echo "4. ヘルスチェック確認"
+          
+      - name: デプロイ完了通知
+        run: |
+          echo "デプロイが完了しました"

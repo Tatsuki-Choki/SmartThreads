@@ -1,0 +1,87 @@
+name: Security
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # 毎日午前9時（JST）に実行
+    - cron: '0 0 * * *'
+
+jobs:
+  security-frontend:
+    name: フロントエンドセキュリティチェック
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./smartthreads-frontend
+        
+    steps:
+      - name: コードをチェックアウト
+        uses: actions/checkout@v4
+        
+      - name: Node.js環境を設定
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ./smartthreads-frontend/package-lock.json
+          
+      - name: 依存関係の脆弱性チェック
+        run: |
+          npm ci
+          npm audit --audit-level=moderate || true
+          
+  security-backend:
+    name: バックエンドセキュリティチェック
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./smartthreads-backend
+        
+    steps:
+      - name: コードをチェックアウト
+        uses: actions/checkout@v4
+        
+      - name: Node.js環境を設定
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ./smartthreads-backend/package-lock.json
+          
+      - name: 依存関係の脆弱性チェック
+        run: |
+          npm ci
+          npm audit --audit-level=moderate || true
+
+  codeql-analysis:
+    name: CodeQLセキュリティ分析
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript', 'typescript' ]
+
+    steps:
+      - name: コードをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: CodeQL初期化
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: 自動ビルド
+        uses: github/codeql-action/autobuild@v3
+
+      - name: CodeQL分析実行
+        uses: github/codeql-action/analyze@v3
