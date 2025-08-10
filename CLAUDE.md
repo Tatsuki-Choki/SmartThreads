@@ -12,6 +12,44 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Claude Codeとの対話において、特別な理由がない限りすべて日本語でコミュニケーションを取ること。
 
+## デザインルール
+
+**厳格な色彩制限 - モノクロデザインの徹底**
+
+### 🚫 使用禁止色彩
+- **カラフルな色は一切使用禁止**
+- 赤、緑、黄色、紫、ピンク、オレンジなどの色彩は使わない
+- グラデーションや複数色の組み合わせは使わない
+- 絵文字の使用は一切禁止（技術的にやむを得ない場合を除く）
+
+### ✅ 許可される色彩
+**基本色（必須）:**
+- **白** (`#ffffff`, `white`)
+- **黒** (`#000000`, `black`) 
+- **グレースケール** (`gray-50`, `gray-100`, `gray-200`, `gray-300`, `gray-400`, `gray-500`, `gray-600`, `gray-700`, `gray-800`, `gray-900`)
+
+**例外色（最小限の使用）:**
+- **選択状態のみ**: 青色 (`blue-500`, `blue-600`) - アクティブタブ、選択ボタンのみ
+- **エラー表示のみ**: 赤色 (`red-500`, `red-600`) - エラーメッセージ、削除ボタンのみ
+
+### 🎨 デザイン原則
+1. **モノクロベース**: すべてのUIコンポーネントは白・黒・グレーで構成
+2. **最小限のアクセント**: 青色は選択状態でのみ使用
+3. **視覚的階層**: グレーの濃淡で情報の重要度を表現
+4. **シンプルアイコン**: Lucide Reactの単色アイコンのみ使用
+
+### 📝 エラーメッセージ・通知
+- **すべて日本語で表示**
+- 英語のエラーメッセージは即座に日本語に翻訳
+- ユーザーに分かりやすい表現を使用
+- 技術的なエラーは一般ユーザー向けに平易化
+
+### 🚨 実装時の注意事項
+- `className`で色を指定する際は必ず上記ルールを確認
+- 新しいコンポーネント作成時は既存のモノクロデザインを参考にする
+- 外部ライブラリ使用時も色彩制限を適用
+- プロダクトロゴやブランド要素も可能な限りモノクロ化
+
 ## Project Overview
 
 SmartThreads is a mobile-first web application for managing Threads (Meta) posts, scheduling, and bulk operations. It's designed as a PWA optimized for iOS/Android browsers with a focus on safe and efficient content management for multiple accounts.
